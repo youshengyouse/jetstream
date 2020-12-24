@@ -1,6 +1,80 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/jetstream/compare/v1.5.0...master)
+## [Unreleased](https://github.com/laravel/jetstream/compare/v1.6.5...master)
+
+
+## [v1.6.5 (2020-12-15)](https://github.com/laravel/jetstream/compare/v1.6.4...v1.6.5)
+
+### Fixed
+- Add missing import must verify email interface ([#529](https://github.com/laravel/jetstream/pull/529))
+- Use named route for two-factor ([#528](https://github.com/laravel/jetstream/pull/528))
+
+
+## [v1.6.4 (2020-12-08)](https://github.com/laravel/jetstream/compare/v1.6.3...v1.6.4)
+
+### Changed
+- Rename path to prefix for route config ([#504](https://github.com/laravel/jetstream/pull/504))
+
+
+## [v1.6.3 (2020-12-01)](https://github.com/laravel/jetstream/compare/v1.6.2...v1.6.3)
+
+### Fixed
+- Clears any validation error message before re-displaying confirmation ([#487](https://github.com/laravel/jetstream/pull/487))
+
+
+## [v1.6.2 (2020-11-24)](https://github.com/laravel/jetstream/compare/v1.6.1...v1.6.2)
+
+### Fixed
+- Use Alpine directly for guest layout ([#485](https://github.com/laravel/jetstream/pull/485))
+
+
+## [v1.6.1 (2020-11-17)](https://github.com/laravel/jetstream/compare/v1.6.0...v1.6.1)
+
+### Changed
+- Use mix helper and remove CDNs  ([#450](https://github.com/laravel/jetstream/pull/450), [ca94bd5](https://github.com/laravel/jetstream/commit/ca94bd599f9874cf02b9e92ae4d91605fdc1441b))
+
+### Fixed
+- Fix feature toggles in Inertia ([#451](https://github.com/laravel/jetstream/pull/451), [#454](https://github.com/laravel/jetstream/pull/454))
+- Update response status code to prevent method not allowed ([#456](https://github.com/laravel/jetstream/pull/456))
+
+
+## [v1.6.0 (2020-11-03)](https://github.com/laravel/jetstream/compare/v1.5.3...v1.6.0)
+
+### Added
+- PHP 8 Support ([#416](https://github.com/laravel/jetstream/pull/416))
+
+### Fixed
+- Delete user tokens when user is deleted ([#406](https://github.com/laravel/jetstream/pull/406), [5bc500e](https://github.com/laravel/jetstream/commit/5bc500e65c69f9bee8667de9287d18369b24b793))
+- Fix composer memory limit crashes ([#412](https://github.com/laravel/jetstream/pull/412))
+- Update `TwoFactorAuthenticationForm.vue` ([#417](https://github.com/laravel/jetstream/pull/417))
+
+
+## [v1.5.3 (2020-10-27)](https://github.com/laravel/jetstream/compare/v1.5.2...v1.5.3)
+
+### Fixed
+- Fix Livewire Modal Closing Issue By Bumping Alpine To `2.7.3` ([#404](https://github.com/laravel/jetstream/pull/404))
+- Delete the users profile picture ([#399](https://github.com/laravel/jetstream/pull/399))
+
+
+## [v1.5.2 (2020-10-27)](https://github.com/laravel/jetstream/compare/v1.5.1...v1.5.2)
+
+### Added
+- Adds custom redirects after creating or deleting a team ([#383](https://github.com/laravel/jetstream/pull/383), [ef3382d](https://github.com/laravel/jetstream/commit/ef3382d316b763211f25eaa7e1ba09ec373d0508))
+
+### Changed
+- Make team show use policies ([#379](https://github.com/laravel/jetstream/pull/379))
+- Use ziggy current method to check active link ([#402](https://github.com/laravel/jetstream/pull/402))
+
+### Fixed
+- Add missing trait ([#385](https://github.com/laravel/jetstream/pull/385))
+- Slot Empty Checking & Return Default Value ([#389](https://github.com/laravel/jetstream/pull/389))
+- Constrain Ziggy version to `^0.9.4` ([#395](https://github.com/laravel/jetstream/pull/395))
+
+
+## [v1.5.1 (2020-10-21)](https://github.com/laravel/jetstream/compare/v1.5.0...v1.5.1)
+
+### Fixed
+- Lock `inertiajs/inertia-laravel` to `^0.2.4` ([#371](https://github.com/laravel/jetstream/pull/371))
 
 
 ## [v1.5.0 (2020-10-20)](https://github.com/laravel/jetstream/compare/v1.4.1...v1.5.0)

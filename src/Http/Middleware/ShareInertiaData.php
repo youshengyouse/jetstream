@@ -27,9 +27,13 @@ class ShareInertiaData
                                         Jetstream::hasTeamFeatures() &&
                                         Gate::forUser($request->user())->check('create', Jetstream::newTeamModel()),
                     'canManageTwoFactorAuthentication' => Features::canManageTwoFactorAuthentication(),
+                    'canUpdatePassword' => Features::enabled(Features::updatePasswords()),
+                    'canUpdateProfileInformation' => Features::canUpdateProfileInformation(),
                     'flash' => $request->session()->get('flash', []),
+                    'hasAccountDeletionFeatures' => Jetstream::hasAccountDeletionFeatures(),
                     'hasApiFeatures' => Jetstream::hasApiFeatures(),
                     'hasTeamFeatures' => Jetstream::hasTeamFeatures(),
+                    'hasTermsAndPrivacyPolicyFeature' => Jetstream::hasTermsAndPrivacyPolicyFeature(),
                     'managesProfilePhotos' => Jetstream::managesProfilePhotos(),
                 ];
             },
@@ -53,7 +57,6 @@ class ShareInertiaData
                     return [$key => $bag->messages()];
                 })->all();
             },
-            'currentRouteName' => Route::currentRouteName(),
         ]));
 
         return $next($request);

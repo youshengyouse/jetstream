@@ -17,7 +17,7 @@ use Laravel\Jetstream\Http\Livewire\CreateTeamForm;
 use Laravel\Jetstream\Http\Livewire\DeleteTeamForm;
 use Laravel\Jetstream\Http\Livewire\DeleteUserForm;
 use Laravel\Jetstream\Http\Livewire\LogoutOtherBrowserSessionsForm;
-use Laravel\Jetstream\Http\Livewire\NavigationDropdown;
+use Laravel\Jetstream\Http\Livewire\NavigationMenu;
 use Laravel\Jetstream\Http\Livewire\TeamMemberManager;
 use Laravel\Jetstream\Http\Livewire\TwoFactorAuthenticationForm;
 use Laravel\Jetstream\Http\Livewire\UpdatePasswordForm;
@@ -39,7 +39,7 @@ class JetstreamServiceProvider extends ServiceProvider
 
         $this->app->afterResolving(BladeCompiler::class, function () {
             if (config('jetstream.stack') === 'livewire' && class_exists(Livewire::class)) {
-                Livewire::component('navigation-dropdown', NavigationDropdown::class);
+                Livewire::component('navigation-menu', NavigationMenu::class);
                 Livewire::component('profile.update-profile-information-form', UpdateProfileInformationForm::class);
                 Livewire::component('profile.update-password-form', UpdatePasswordForm::class);
                 Livewire::component('profile.two-factor-authentication-form', TwoFactorAuthenticationForm::class);
@@ -119,6 +119,7 @@ class JetstreamServiceProvider extends ServiceProvider
             $this->registerComponent('dropdown-link');
             $this->registerComponent('form-section');
             $this->registerComponent('input');
+            $this->registerComponent('checkbox');
             $this->registerComponent('input-error');
             $this->registerComponent('label');
             $this->registerComponent('modal');
@@ -190,7 +191,7 @@ class JetstreamServiceProvider extends ServiceProvider
             Route::group([
                 'namespace' => 'Laravel\Jetstream\Http\Controllers',
                 'domain' => config('jetstream.domain', null),
-                'prefix' => config('jetstream.path', null),
+                'prefix' => config('jetstream.prefix', config('jetstream.path')),
             ], function () {
                 $this->loadRoutesFrom(__DIR__.'/../routes/'.config('jetstream.stack').'.php');
             });

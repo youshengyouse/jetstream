@@ -18,7 +18,11 @@ class ApiTokenController extends Controller
     public function index(Request $request)
     {
         return Jetstream::inertia()->render($request, 'API/Index', [
-            'tokens' => $request->user()->tokens,
+            'tokens' => $request->user()->tokens->map(function ($token) {
+                return $token->toArray() + [
+                    'last_used_ago' => optional($token->last_used_at)->diffForHumans(),
+                ];
+            }),
             'availablePermissions' => Jetstream::$permissions,
             'defaultPermissions' => Jetstream::$defaultPermissions,
         ]);
@@ -62,7 +66,7 @@ class ApiTokenController extends Controller
             'abilities' => Jetstream::validPermissions($request->input('permissions', [])),
         ])->save();
 
-        return back();
+        return back(303);
     }
 
     /**
@@ -76,6 +80,6 @@ class ApiTokenController extends Controller
     {
         $request->user()->tokens()->where('id', $tokenId)->delete();
 
-        return back();
+        return back(303);
     }
 }

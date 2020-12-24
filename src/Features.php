@@ -7,13 +7,6 @@ use Illuminate\Support\Arr;
 class Features
 {
     /**
-     * The options enabled for a given feature.
-     *
-     * @var array
-     */
-    protected static $featureOptions = [];
-
-    /**
      * Determine if the given feature is enabled.
      *
      * @param  string  $feature
@@ -34,7 +27,7 @@ class Features
     public static function optionEnabled(string $feature, string $option)
     {
         return static::enabled($feature) &&
-               Arr::get(static::$featureOptions, $feature.'.'.$option) === true;
+               config("jetstream-options.{$feature}.{$option}") === true;
     }
 
     /**
@@ -78,6 +71,26 @@ class Features
     }
 
     /**
+     * Determine if the application has terms of service / privacy policy confirmation enabled.
+     *
+     * @return bool
+     */
+    public static function hasTermsAndPrivacyPolicyFeature()
+    {
+        return static::enabled(static::termsAndPrivacyPolicy());
+    }
+
+    /**
+     * Determine if the application is using any account deletion features.
+     *
+     * @return bool
+     */
+    public static function hasAccountDeletionFeatures()
+    {
+        return static::enabled(static::accountDeletion());
+    }
+
+    /**
      * Enable the profile photo upload feature.
      *
      * @return string
@@ -106,9 +119,29 @@ class Features
     public static function teams(array $options = [])
     {
         if (! empty($options)) {
-            static::$featureOptions['teams'] = $options;
+            config(['jetstream-options.teams' => $options]);
         }
 
         return 'teams';
+    }
+
+    /**
+     * Enable the terms of service and privacy policy feature.
+     *
+     * @return string
+     */
+    public static function termsAndPrivacyPolicy()
+    {
+        return 'terms';
+    }
+
+    /**
+     * Enable the account deletion feature.
+     *
+     * @return string
+     */
+    public static function accountDeletion()
+    {
+        return 'account-deletion';
     }
 }
