@@ -33,11 +33,17 @@ class InstallCommand extends Command
     public function handle()
     {
         // Publish...
+        // 1. 将config/jetstream.php拷贝到项目的配置目录中
         $this->callSilent('vendor:publish', ['--tag' => 'jetstream-config', '--force' => true]);
+        // 2.将数据迁移文件(只是用户表的)拷贝到项目中
         $this->callSilent('vendor:publish', ['--tag' => 'jetstream-migrations', '--force' => true]);
 
+        // 3. 将laravel/fortify(安装jetstream时自动安装)这个包中的配置文件拷贝到项目中，
         $this->callSilent('vendor:publish', ['--tag' => 'fortify-config', '--force' => true]);
+        //4. 将fortify中的6个文件拷贝到项目中
         $this->callSilent('vendor:publish', ['--tag' => 'fortify-support', '--force' => true]);
+
+        // 5.修改users表
         $this->callSilent('vendor:publish', ['--tag' => 'fortify-migrations', '--force' => true]);
 
         // "Home" Route...
