@@ -2,7 +2,10 @@
 
 namespace Laravel\Jetstream;
 
+use App\Http\Middleware\HandleInertiaRequests;
 use Illuminate\Contracts\Http\Kernel;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
@@ -73,6 +76,20 @@ class JetstreamServiceProvider extends ServiceProvider
         $this->configureRoutes();
         $this->configureCommands();
 
+        RedirectResponse::macro('banner', function ($message) {
+            return $this->with('flash', [
+                'bannerStyle' => 'success',
+                'banner' => $message,
+            ]);
+        });
+
+        RedirectResponse::macro('dangerBanner', function ($message) {
+            return $this->with('flash', [
+                'bannerStyle' => 'danger',
+                'banner' => $message,
+            ]);
+        });
+
         if (config('jetstream.stack') === 'inertia') {
             $this->bootInertia();
         }
@@ -92,6 +109,7 @@ class JetstreamServiceProvider extends ServiceProvider
             $this->registerComponent('application-mark');
             $this->registerComponent('authentication-card');
             $this->registerComponent('authentication-card-logo');
+            $this->registerComponent('banner');
             $this->registerComponent('button');
             $this->registerComponent('confirmation-modal');
             $this->registerComponent('confirms-password');
@@ -153,6 +171,7 @@ class JetstreamServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../database/migrations/2020_05_21_100000_create_teams_table.php' => database_path('migrations/2020_05_21_100000_create_teams_table.php'),
             __DIR__.'/../database/migrations/2020_05_21_200000_create_team_user_table.php' => database_path('migrations/2020_05_21_200000_create_team_user_table.php'),
+            __DIR__.'/../database/migrations/2020_05_21_300000_create_team_invitations_table.php' => database_path('migrations/2020_05_21_300000_create_team_invitations_table.php'),
         ], 'jetstream-team-migrations');
 
         $this->publishes([
@@ -205,5 +224,47 @@ class JetstreamServiceProvider extends ServiceProvider
 
         $kernel->appendMiddlewareToGroup('web', ShareInertiaData::class);
         $kernel->appendToMiddlewarePriority(ShareInertiaData::class);
+
+        if (class_exists(HandleInertiaRequests::class)) {
+            $kernel->appendToMiddlewarePriority(HandleInertiaRequests::class);
+        }
+
+        Fortify::loginView(function () {
+            return Inertia::render('Auth/Login', [
+                'canResetPassword' => Route::has('password.request'),
+                'status' => session('status'),
+            ]);
+        });
+
+        Fortify::requestPasswordResetLinkView(function () {
+            return Inertia::render('Auth/ForgotPassword', [
+                'status' => session('status'),
+            ]);
+        });
+
+        Fortify::resetPasswordView(function (Request $request) {
+            return Inertia::render('Auth/ResetPassword', [
+                'email' => $request->input('email'),
+                'token' => $request->route('token'),
+            ]);
+        });
+
+        Fortify::registerView(function () {
+            return Inertia::render('Auth/Register');
+        });
+
+        Fortify::verifyEmailView(function () {
+            return Inertia::render('Auth/VerifyEmail', [
+                'status' => session('status'),
+            ]);
+        });
+
+        Fortify::twoFactorChallengeView(function () {
+            return Inertia::render('Auth/TwoFactorChallenge');
+        });
+
+        Fortify::confirmPasswordView(function () {
+            return Inertia::render('Auth/ConfirmPassword');
+        });
     }
 }

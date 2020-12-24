@@ -16,7 +16,7 @@
                 <template #form>
                     <div class="col-span-6">
                         <div class="max-w-xl text-sm text-gray-600">
-                            Please provide the email address of the person you would like to add to this team. The email address must be associated with an existing account.
+                            Please provide the email address of the person you would like to add to this team.
                         </div>
                     </div>
 
@@ -71,6 +71,39 @@
             </jet-form-section>
         </div>
 
+        <div v-if="team.team_invitations.length > 0 && userPermissions.canAddTeamMembers">
+            <jet-section-border />
+
+            <!-- Team Member Invitations -->
+            <jet-action-section class="mt-10 sm:mt-0">
+                <template #title>
+                    Pending Team Invitations
+                </template>
+
+                <template #description>
+                    These people have been invited to your team and have been sent an invitation email. They may join the team by accepting the email invitation.
+                </template>
+
+                <!-- Pending Team Member Invitation List -->
+                <template #content>
+                    <div class="space-y-6">
+                        <div class="flex items-center justify-between" v-for="invitation in team.team_invitations" :key="invitation.id">
+                            <div class="text-gray-600">{{ invitation.email }}</div>
+
+                            <div class="flex items-center">
+                                <!-- Cancel Team Invitation -->
+                                <button class="cursor-pointer ml-6 text-sm text-red-500 focus:outline-none"
+                                                    @click="cancelTeamInvitation(invitation)"
+                                                    v-if="userPermissions.canRemoveTeamMembers">
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </jet-action-section>
+        </div>
+
         <div v-if="team.users.length > 0">
             <jet-section-border />
 
@@ -108,7 +141,7 @@
                                 <!-- Leave Team -->
                                 <button class="cursor-pointer ml-6 text-sm text-red-500 focus:outline-none"
                                                     @click="confirmLeavingTeam"
-                                                    v-if="$page.user.id === user.id">
+                                                    v-if="$page.props.user.id === user.id">
                                     Leave
                                 </button>
 
@@ -294,6 +327,12 @@
                 });
             },
 
+            cancelTeamInvitation(invitation) {
+                this.$inertia.delete(route('team-invitations.destroy', invitation), {
+                    preserveScroll: true
+                });
+            },
+
             manageRole(teamMember) {
                 this.managingRoleFor = teamMember
                 this.updateRoleForm.role = teamMember.membership.role
@@ -303,8 +342,9 @@
             updateRole() {
                 this.updateRoleForm.put(route('team-members.update', [this.team, this.managingRoleFor]), {
                     preserveScroll: true,
-                }).then(() => {
-                    this.currentlyManagingRole = false
+                    onSuccess: () => {
+                        this.currentlyManagingRole = false
+                    }
                 })
             },
 
@@ -313,7 +353,7 @@
             },
 
             leaveTeam() {
-                this.leaveTeamForm.delete(route('team-members.destroy', [this.team, this.$page.user]))
+                this.leaveTeamForm.delete(route('team-members.destroy', [this.team, this.$page.props.user]))
             },
 
             confirmTeamMemberRemoval(teamMember) {
@@ -324,8 +364,9 @@
                 this.removeTeamMemberForm.delete(route('team-members.destroy', [this.team, this.teamMemberBeingRemoved]), {
                     preserveScroll: true,
                     preserveState: true,
-                }).then(() => {
-                    this.teamMemberBeingRemoved = null
+                    onSuccess: () => {
+                        this.teamMemberBeingRemoved = null
+                    }
                 })
             },
 
